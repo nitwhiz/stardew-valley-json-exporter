@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonExporter", "JsonExporter.csproj", "{61CA5CCC-6A6D-499E-B58C-6870227CD51B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61CA5CCC-6A6D-499E-B58C-6870227CD51B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61CA5CCC-6A6D-499E-B58C-6870227CD51B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61CA5CCC-6A6D-499E-B58C-6870227CD51B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61CA5CCC-6A6D-499E-B58C-6870227CD51B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

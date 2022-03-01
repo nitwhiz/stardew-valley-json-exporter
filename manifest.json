@@ -1,0 +1,10 @@
+{
+  "Name": "JSON Exporter",
+  "Author": "nitwhiz",
+  "Version": "1.0.0",
+  "Description": "Export everything as JSON!",
+  "UniqueID": "nitwhiz.jsonexporter",
+  "EntryDll": "JsonExporter.dll",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": []
+}
