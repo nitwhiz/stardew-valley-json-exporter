@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
@@ -6,10 +7,14 @@ namespace JsonExporter.data.wrapped
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class WrappedInstance<T>
     {
+        [JsonProperty] public readonly string Id;
+        
         public readonly T Original;
 
         protected WrappedInstance(T original)
         {
+            Id = Guid.NewGuid().ToString();
+            
             Original = original;
         }
 

@@ -2,27 +2,27 @@ using System.Collections.Generic;
 using System.Linq;
 using JsonExporter.data.gift;
 using JsonExporter.repository.npc;
+using Newtonsoft.Json;
 
 namespace JsonExporter.repository.gift
 {
-    public class GiftTasteRepository
+    public class GiftTasteRepository : Repository<GiftTasteRepository, GiftTaste>
     {
-        private static readonly Dictionary<string, GiftTaste> Tastes = new();
+        [JsonProperty] private static readonly Dictionary<string, GiftTaste> TastesByNpc = new();
 
-        private static GiftTasteRepository _instance;
-
-        public static GiftTasteRepository GetInstance()
+        public override void Populate()
         {
-            return _instance ??= new GiftTasteRepository();
+            TastesByNpc.Clear();
+            
+            foreach (var npc in NpcRepository.GetInstance().GetAll())
+            {
+                TastesByNpc.Add(npc.Id, new GiftTaste(npc.Name));
+            }
         }
 
-        public List<GiftTaste> GetAll()
+        public override List<GiftTaste> GetAll()
         {
-            if (Tastes.Count == 0)
-                foreach (var npc in NpcRepository.GetInstance().GetAll())
-                    Tastes.Add(npc.Name, new GiftTaste(npc.Name));
-
-            return Tastes.Values.ToList();
+            return TastesByNpc.Values.ToList();
         }
     }
 }

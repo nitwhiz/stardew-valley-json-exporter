@@ -1,35 +1,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using JsonExporter.data.wrapped.@object;
+using Newtonsoft.Json;
 using StardewValley;
 
 namespace JsonExporter.repository.item
 {
-    public class ItemRepository
+    public class ItemRepository : Repository<ItemRepository, WrappedObject>
     {
-        private static ItemRepository _instance;
+        [JsonProperty] private static readonly Dictionary<string, WrappedObject> Objects = new();
 
-        private static readonly Dictionary<int, WrappedObject> Objects = new();
-
-        public static ItemRepository GetInstance()
+        private Dictionary<string, string> NormalizedNameToId = new();
+        
+        public override void Populate()
         {
-            return _instance ??= new ItemRepository();
+            Objects.Clear();
+
+            foreach (var itemId in Game1.objectInformation.Keys)
+            {
+                var sObject = new Object(itemId, 1); 
+                var wItem = new WrappedObject(itemId, sObject);
+
+                // ensure only one entry for items
+                if (!NormalizedNameToId.ContainsKey(wItem.NormalizedName))
+                {
+                    NormalizedNameToId.Add(wItem.NormalizedName, wItem.Id);
+                    Objects.Add(wItem.Id, wItem);
+                }
+            }
         }
-
-        public List<WrappedObject> GetAll()
+        
+        public override List<WrappedObject> GetAll()
         {
-            if (Objects.Count == 0)
-                foreach (var itemId in Game1.objectInformation.Keys)
-                    Objects.Add(itemId, new WrappedObject(new Object(itemId, 1)));
-
             return Objects.Values.ToList();
-        }
-
-        public WrappedObject GetById(int itemId)
-        {
-            if (Objects.ContainsKey(itemId)) return Objects[itemId];
-
-            return null;
         }
     }
 }

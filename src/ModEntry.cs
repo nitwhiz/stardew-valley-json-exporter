@@ -1,4 +1,5 @@
-﻿using JsonExporter.repository.gift;
+﻿using System.IO;
+using JsonExporter.repository.gift;
 using JsonExporter.repository.item;
 using JsonExporter.repository.npc;
 using StardewModdingAPI;
@@ -9,31 +10,39 @@ namespace JsonExporter
     {
         public override void Entry(IModHelper helper)
         {
+            var basePath = Path.Combine(helper.DirectoryPath, "export");
+
+            if (Directory.Exists(basePath))
+            {
+                Directory.Delete(basePath, true);
+            }
+
+            Directory.CreateDirectory(basePath);
+
             helper.ConsoleCommands.Add("export", "export all data", (cmd, args) =>
             {
-                Monitor.Log("exporting gift tastes", LogLevel.Info);
+                Monitor.Log("exporting...", LogLevel.Info);
 
-                var giftTastes = GiftTasteRepository.GetInstance().GetAll();
-                helper.Data.WriteJsonFile("data/gift-tastes.json", giftTastes);
+                Monitor.Log("npcs", LogLevel.Info);
+                NpcRepository.GetInstance().ExportJson(basePath, "npcs");
 
-                Monitor.Log("exporting npcs", LogLevel.Info);
+                Monitor.Log("items", LogLevel.Info);
+                ItemRepository.GetInstance().ExportJson(basePath, "items");
 
-                var npcs = NpcRepository.GetInstance().GetAll();
-                helper.Data.WriteJsonFile("data/npcs.json", npcs);
+                Monitor.Log("gift tastes", LogLevel.Info);
+                GiftTasteRepository.GetInstance().ExportJson(basePath, "gift-tastes-by-npc");
 
-                npcs.ForEach(npc =>
+                Monitor.Log("portrait textures", LogLevel.Info);
+                foreach (var npc in NpcRepository.GetInstance().GetAll())
                 {
-                    Monitor.Log($"exporting portrait for {npc.Name}", LogLevel.Info);
+                    npc.SaveTexture(basePath);
+                }
 
-                    npc.SavePortrait(helper.DirectoryPath);
-                });
-
-                ItemRepository.GetInstance().GetAll().ForEach(item =>
+                Monitor.Log("item textures");
+                foreach (var item in ItemRepository.GetInstance().GetAll())
                 {
-                    Monitor.Log($"exporting texture for {item.DisplayName}", LogLevel.Info);
-
-                    item.SaveTexture(helper.DirectoryPath);
-                });
+                    item.SaveTexture(basePath);
+                }
 
                 Monitor.Log("done!", LogLevel.Info);
             });

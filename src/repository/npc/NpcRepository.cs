@@ -1,49 +1,47 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using JsonExporter.data.wrapped.npc;
+using Newtonsoft.Json;
 using StardewValley;
 
 namespace JsonExporter.repository.npc
 {
-    public class NpcRepository
+    public class NpcRepository : Repository<NpcRepository, WrappedNpc>
     {
-        private static NpcRepository _instance;
+        [JsonProperty] private static readonly Dictionary<string, WrappedNpc> Npcs = new();
 
-        private static readonly Dictionary<string, WrappedNpc> NPCs = new();
-
-        public static NpcRepository GetInstance()
+        private static readonly Dictionary<string, string> NameToId = new();
+        
+        public override void Populate()
         {
-            return _instance ??= new NpcRepository();
-        }
-
-        private void PopulateNPCs()
-        {
-            if (NPCs.Count != 0) return;
+            Npcs.Clear();
 
             foreach (var npcName in Game1.NPCGiftTastes.Keys)
             {
-                if (npcName.StartsWith("Universal_")) continue;
+                if (npcName.StartsWith("Universal_"))
+                {
+                    continue;
+                }
 
-                NPCs.Add(npcName, new WrappedNpc(new NPC
+                var wNpc = new WrappedNpc(new NPC
                 {
                     Name = npcName
-                }));
+                });
+
+                NameToId.Add(wNpc.Name, wNpc.Id);
+                Npcs.Add(wNpc.Id, wNpc);
             }
         }
 
-        public List<WrappedNpc> GetAll()
+        public override List<WrappedNpc> GetAll()
         {
-            PopulateNPCs();
-
-            return NPCs.Values.ToList();
+            return Npcs.Values.ToList();
         }
 
-        public WrappedNpc GetByName(string name)
+        public WrappedNpc GetByName(string npcName)
         {
-            PopulateNPCs();
-
-            return NPCs[name] ?? throw new ArgumentException($"no npc with name '{name}' found");
+            return Npcs[NameToId[npcName]];
         }
     }
 }

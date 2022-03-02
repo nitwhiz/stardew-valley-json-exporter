@@ -8,9 +8,8 @@ namespace JsonExporter.data.wrapped.npc
 {
     public class WrappedNpc : WrappedInstance<NPC>
     {
+        
         [JsonProperty] public readonly string Name;
-
-        [JsonProperty] public readonly string NormalizedTextureName;
 
         public readonly string TextureName;
 
@@ -18,13 +17,11 @@ namespace JsonExporter.data.wrapped.npc
         {
             Name = npc.displayName;
             TextureName = npc.getTextureName();
-
-            NormalizedTextureName = Normalize(TextureName);
         }
 
-        public void SavePortrait(string basePath)
+        public void SaveTexture(string basePath)
         {
-            Directory.CreateDirectory(Path.Combine(basePath, "portraits"));
+            Directory.CreateDirectory(Path.Combine(basePath, "textures/portraits"));
 
             var rTarget = new RenderTarget2D(Game1.graphics.GraphicsDevice, 64, 64, false,
                 SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
@@ -40,7 +37,7 @@ namespace JsonExporter.data.wrapped.npc
             s.Draw(Original.Portrait, Vector2.Zero, new Rectangle(0, 0, 64, 64), Color.White);
             s.End();
 
-            Stream stream = File.Create(Path.Combine(basePath, "portraits", NormalizedTextureName + ".png"));
+            Stream stream = File.Create(Path.Combine(basePath, "textures/portraits", Id + ".png"));
             rTarget.SaveAsPng(stream, rTarget.Width, rTarget.Height);
 
             stream.Dispose();

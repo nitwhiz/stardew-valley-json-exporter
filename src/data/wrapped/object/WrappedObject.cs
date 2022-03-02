@@ -7,15 +7,17 @@ using StardewObject = StardewValley.Object;
 
 namespace JsonExporter.data.wrapped.@object
 {
-    [JsonObject(MemberSerialization.OptIn)]
     public class WrappedObject : WrappedInstance<StardewObject>
     {
         [JsonProperty] public readonly string DisplayName;
+        
+        [JsonProperty] public readonly int ItemId;
+        
+        public readonly string NormalizedName;
 
-        [JsonProperty] public readonly string NormalizedName;
-
-        public WrappedObject(StardewObject originalStardewObject) : base(originalStardewObject)
+        public WrappedObject(int itemId, StardewObject originalStardewObject) : base(originalStardewObject)
         {
+            ItemId = itemId;
             DisplayName = Original.DisplayName;
             NormalizedName = Normalize(DisplayName);
         }
@@ -36,9 +38,9 @@ namespace JsonExporter.data.wrapped.@object
             Original.drawInMenu(s, Vector2.Zero, 1f, 1f, 1f, StackDrawType.Hide, Color.White, false);
             s.End();
 
-            Directory.CreateDirectory(Path.Combine(basePath, "items"));
+            Directory.CreateDirectory(Path.Combine(basePath, "textures/items"));
 
-            var stream = File.Create(Path.Combine(basePath, "items", NormalizedName + ".png"));
+            var stream = File.Create(Path.Combine(basePath, "textures/items", Id + ".png"));
 
             rTarget.SaveAsPng(stream, rTarget.Width, rTarget.Height);
 
