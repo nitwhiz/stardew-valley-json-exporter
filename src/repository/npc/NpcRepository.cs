@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using JsonExporter.data.wrapped.npc;
 using Newtonsoft.Json;
@@ -9,7 +8,7 @@ namespace JsonExporter.repository.npc
 {
     public class NpcRepository : Repository<NpcRepository, WrappedNpc>
     {
-        [JsonProperty] private static readonly Dictionary<string, WrappedNpc> Npcs = new();
+        [JsonProperty("npcs")] private static readonly Dictionary<string, WrappedNpc> Npcs = new();
 
         private static readonly Dictionary<string, string> NameToId = new();
         

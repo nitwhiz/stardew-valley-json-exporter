@@ -8,7 +8,7 @@ namespace JsonExporter.repository.item
 {
     public class ItemRepository : Repository<ItemRepository, WrappedObject>
     {
-        [JsonProperty] private static readonly Dictionary<string, WrappedObject> Objects = new();
+        [JsonProperty("objects")] private static readonly Dictionary<string, WrappedObject> Objects = new();
 
         private Dictionary<string, string> NormalizedNameToId = new();
         

@@ -8,7 +8,7 @@ namespace JsonExporter.repository.gift
 {
     public class GiftTasteRepository : Repository<GiftTasteRepository, GiftTaste>
     {
-        [JsonProperty] private static readonly Dictionary<string, GiftTaste> TastesByNpc = new();
+        [JsonProperty("tastesByNpc")] private static readonly Dictionary<string, GiftTaste> TastesByNpc = new();
 
         public override void Populate()
         {

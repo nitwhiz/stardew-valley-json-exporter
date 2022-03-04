@@ -9,9 +9,9 @@ namespace JsonExporter.data.wrapped.@object
 {
     public class WrappedObject : WrappedInstance<StardewObject>
     {
-        [JsonProperty] public readonly string DisplayName;
+        [JsonProperty("displayName")] public readonly string DisplayName;
         
-        [JsonProperty] public readonly int ItemId;
+        [JsonProperty("itemId")] public readonly int ItemId;
         
         public readonly string NormalizedName;
 

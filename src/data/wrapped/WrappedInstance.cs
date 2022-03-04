@@ -7,7 +7,7 @@ namespace JsonExporter.data.wrapped
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class WrappedInstance<T>
     {
-        [JsonProperty] public readonly string Id;
+        [JsonProperty("id")] public readonly string Id;
         
         public readonly T Original;
 

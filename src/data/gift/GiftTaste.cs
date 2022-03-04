@@ -10,15 +10,15 @@ namespace JsonExporter.data.gift
     [JsonObject(MemberSerialization.OptIn)]
     public class GiftTaste
     {
-        [JsonProperty] public readonly List<string> DislikeItems = new();
+        [JsonProperty("dislikeItems")] public readonly List<string> DislikeItems = new();
 
-        [JsonProperty] public readonly List<string> HateItems = new();
+        [JsonProperty("hateItems")] public readonly List<string> HateItems = new();
 
-        [JsonProperty] public readonly List<string> LikeItems = new();
+        [JsonProperty("likeItems")] public readonly List<string> LikeItems = new();
 
-        [JsonProperty] public readonly List<string> LoveItems = new();
+        [JsonProperty("loveItems")] public readonly List<string> LoveItems = new();
 
-        [JsonProperty] public readonly List<string> NeutralItems = new();
+        [JsonProperty("neutralItems")] public readonly List<string> NeutralItems = new();
 
         public GiftTaste(string npcName)
         {

@@ -9,7 +9,7 @@ namespace JsonExporter.data.wrapped.npc
     public class WrappedNpc : WrappedInstance<NPC>
     {
         
-        [JsonProperty] public readonly string Name;
+        [JsonProperty("name")] public readonly string Name;
 
         public readonly string TextureName;
 
