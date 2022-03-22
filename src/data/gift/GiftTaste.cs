@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JsonExporter.data.wrapped.npc;
 using JsonExporter.repository.item;
 using JsonExporter.repository.npc;
 using Newtonsoft.Json;
@@ -10,6 +11,8 @@ namespace JsonExporter.data.gift
     [JsonObject(MemberSerialization.OptIn)]
     public class GiftTaste
     {
+        [JsonProperty("npcId")] public string NpcId;
+
         [JsonProperty("dislikeItems")] public readonly List<string> DislikeItems = new();
 
         [JsonProperty("hateItems")] public readonly List<string> HateItems = new();
@@ -20,15 +23,20 @@ namespace JsonExporter.data.gift
 
         [JsonProperty("neutralItems")] public readonly List<string> NeutralItems = new();
 
-        public GiftTaste(string npcName)
+        public GiftTaste(string npcId)
         {
             ItemRepository.GetInstance().GetAll().ForEach(item =>
             {
                 int taste;
+                WrappedNpc npc;
 
                 try
                 {
-                    taste = NpcRepository.GetInstance().GetByName(npcName).Original
+                    npc = NpcRepository.GetInstance().GetById(npcId);
+
+                    NpcId = npc.Id;
+
+                    taste = npc.Original
                         .getGiftTasteForThisItem(item.Original);
                 }
                 catch (Exception)

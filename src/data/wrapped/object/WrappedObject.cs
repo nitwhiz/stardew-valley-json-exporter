@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,17 +11,36 @@ namespace JsonExporter.data.wrapped.@object
 {
     public class WrappedObject : WrappedInstance<StardewObject>
     {
-        [JsonProperty("displayName")] public readonly string DisplayName;
-        
-        [JsonProperty("itemId")] public readonly int ItemId;
-        
-        public readonly string NormalizedName;
+        [JsonProperty("displayNames")] public readonly Dictionary<string, string> DisplayNames = new();
 
-        public WrappedObject(int itemId, StardewObject originalStardewObject) : base(originalStardewObject)
+        [JsonProperty("type")] public readonly string Type;
+        
+        [JsonProperty("category")] public readonly int Category;
+        
+        [JsonProperty("internalId")] public readonly int InternalId;
+
+        public WrappedObject(int internalId, StardewObject originalStardewObject) : base(originalStardewObject)
         {
-            ItemId = itemId;
-            DisplayName = Original.DisplayName;
-            NormalizedName = Normalize(DisplayName);
+            InternalId = internalId;
+            Type = originalStardewObject.Type.ToLower();
+            Category = originalStardewObject.Category;
+
+            var languageCodes =
+                (LocalizedContentManager.LanguageCode[]) Enum.GetValues(typeof(LocalizedContentManager.LanguageCode));
+
+            foreach (var languageCode in languageCodes)
+            {
+                try
+                {
+                    LocalizedContentManager.localizedAssetNames.Clear();
+                    Game1.objectInformation = Game1.content.Load<Dictionary<int, string>>("Data\\ObjectInformation", languageCode);
+
+                    DisplayNames.Add(Enum.GetName(typeof(LocalizedContentManager.LanguageCode), languageCode) ?? "none",
+                        Original.DisplayName);
+                } catch {}
+            }
+
+            LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
         }
 
         public void SaveTexture(string basePath)

@@ -8,10 +8,10 @@ namespace JsonExporter.repository.item
 {
     public class ItemRepository : Repository<ItemRepository, WrappedObject>
     {
-        [JsonProperty("objects")] private static readonly Dictionary<string, WrappedObject> Objects = new();
-
-        private Dictionary<string, string> NormalizedNameToId = new();
+        private static readonly Dictionary<string, WrappedObject> Objects = new();
         
+        [JsonProperty("objects")]  private static WrappedObject[] ObjectsAsArray => Objects.Values.ToArray();
+
         public override void Populate()
         {
             Objects.Clear();
@@ -21,12 +21,7 @@ namespace JsonExporter.repository.item
                 var sObject = new Object(itemId, 1); 
                 var wItem = new WrappedObject(itemId, sObject);
 
-                // ensure only one entry for items
-                if (!NormalizedNameToId.ContainsKey(wItem.NormalizedName))
-                {
-                    NormalizedNameToId.Add(wItem.NormalizedName, wItem.Id);
-                    Objects.Add(wItem.Id, wItem);
-                }
+                Objects.Add(wItem.Id, wItem);
             }
         }
         

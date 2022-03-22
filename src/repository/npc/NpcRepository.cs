@@ -8,10 +8,10 @@ namespace JsonExporter.repository.npc
 {
     public class NpcRepository : Repository<NpcRepository, WrappedNpc>
     {
-        [JsonProperty("npcs")] private static readonly Dictionary<string, WrappedNpc> Npcs = new();
+        private static readonly Dictionary<string, WrappedNpc> Npcs = new();
 
-        private static readonly Dictionary<string, string> NameToId = new();
-        
+        [JsonProperty("npcs")] private static WrappedNpc[] NpcsAsArray => Npcs.Values.ToArray();
+
         public override void Populate()
         {
             Npcs.Clear();
@@ -23,12 +23,15 @@ namespace JsonExporter.repository.npc
                     continue;
                 }
 
-                var wNpc = new WrappedNpc(new NPC
+                var npc = new NPC
                 {
                     Name = npcName
-                });
+                };
+                
+                npc.reloadData();
 
-                NameToId.Add(wNpc.Name, wNpc.Id);
+                var wNpc = new WrappedNpc(npc);
+
                 Npcs.Add(wNpc.Id, wNpc);
             }
         }
@@ -38,9 +41,9 @@ namespace JsonExporter.repository.npc
             return Npcs.Values.ToList();
         }
 
-        public WrappedNpc GetByName(string npcName)
+        public WrappedNpc GetById(string npcId)
         {
-            return Npcs[NameToId[npcName]];
+            return Npcs[npcId];
         }
     }
 }

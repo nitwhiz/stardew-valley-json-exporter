@@ -19,9 +19,28 @@ namespace JsonExporter
 
             Directory.CreateDirectory(basePath);
 
-            helper.ConsoleCommands.Add("export", "export all data", (cmd, args) =>
+            helper.ConsoleCommands.Add("export_textures", "export all textures", (cmd, args) =>
             {
-                Monitor.Log("exporting...", LogLevel.Info);
+                Monitor.Log("exporting textures...", LogLevel.Info);
+
+                Monitor.Log("portrait", LogLevel.Info);
+                foreach (var npc in NpcRepository.GetInstance().GetAll())
+                {
+                    npc.SaveTexture(basePath);
+                }
+
+                Monitor.Log("item");
+                foreach (var item in ItemRepository.GetInstance().GetAll())
+                {
+                    item.SaveTexture(basePath);
+                }
+
+                Monitor.Log("done!", LogLevel.Info);
+            });
+
+            helper.ConsoleCommands.Add("export_data", "export all data", (cmd, args) =>
+            {
+                Monitor.Log("exporting data...", LogLevel.Info);
 
                 Monitor.Log("npcs", LogLevel.Info);
                 NpcRepository.GetInstance().ExportJson(basePath, "npcs");
@@ -31,18 +50,6 @@ namespace JsonExporter
 
                 Monitor.Log("gift tastes", LogLevel.Info);
                 GiftTasteRepository.GetInstance().ExportJson(basePath, "gift-tastes-by-npc");
-
-                Monitor.Log("portrait textures", LogLevel.Info);
-                foreach (var npc in NpcRepository.GetInstance().GetAll())
-                {
-                    npc.SaveTexture(basePath);
-                }
-
-                Monitor.Log("item textures");
-                foreach (var item in ItemRepository.GetInstance().GetAll())
-                {
-                    item.SaveTexture(basePath);
-                }
 
                 Monitor.Log("done!", LogLevel.Info);
             });

@@ -8,15 +8,17 @@ namespace JsonExporter.repository.gift
 {
     public class GiftTasteRepository : Repository<GiftTasteRepository, GiftTaste>
     {
-        [JsonProperty("tastesByNpc")] private static readonly Dictionary<string, GiftTaste> TastesByNpc = new();
+        private static readonly Dictionary<string, GiftTaste> TastesByNpc = new();
+        
+        [JsonProperty("tastesByNpc")] private static GiftTaste[] TastesAsArray => TastesByNpc.Values.ToArray();
 
         public override void Populate()
         {
             TastesByNpc.Clear();
-            
+
             foreach (var npc in NpcRepository.GetInstance().GetAll())
             {
-                TastesByNpc.Add(npc.Id, new GiftTaste(npc.Name));
+                TastesByNpc.Add(npc.Id, new GiftTaste(npc.Id));
             }
         }
 

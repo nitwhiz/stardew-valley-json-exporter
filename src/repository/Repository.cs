@@ -5,15 +5,15 @@ using Newtonsoft.Json;
 namespace JsonExporter.repository
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class Repository<T, I> where T : Repository<T, I>, new()
+    public abstract class Repository<TRepository, TItem> where TRepository : Repository<TRepository, TItem>, new()
     {
-        private static T _instance;
+        private static TRepository _instance;
 
-        public static T GetInstance()
+        public static TRepository GetInstance()
         {
             if (_instance == null)
             {
-                _instance = new T();
+                _instance = new TRepository();
                 _instance.Populate();
             }
 
@@ -22,7 +22,7 @@ namespace JsonExporter.repository
 
         public abstract void Populate();
 
-        public abstract List<I> GetAll();
+        public abstract List<TItem> GetAll();
 
         public void ExportJson(string baseDir, string fileName)
         {
