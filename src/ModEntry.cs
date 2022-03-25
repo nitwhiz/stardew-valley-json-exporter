@@ -3,6 +3,7 @@ using JsonExporter.repository.gift;
 using JsonExporter.repository.item;
 using JsonExporter.repository.npc;
 using StardewModdingAPI;
+using StardewValley;
 
 namespace JsonExporter
 {
@@ -52,6 +53,8 @@ namespace JsonExporter
                 GiftTasteRepository.GetInstance().ExportJson(basePath, "gift-tastes-by-npc");
 
                 Monitor.Log("done!", LogLevel.Info);
+                
+                LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
             });
         }
     }

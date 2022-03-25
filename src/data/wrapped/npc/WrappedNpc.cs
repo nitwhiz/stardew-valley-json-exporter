@@ -16,7 +16,7 @@ namespace JsonExporter.data.wrapped.npc
         
         [JsonProperty("birthdayDay")] public readonly int BirthdayDay;
 
-        public readonly string Name;
+        [JsonProperty("name")] public readonly string Name;
 
         public readonly string TextureName;
 
@@ -28,20 +28,25 @@ namespace JsonExporter.data.wrapped.npc
 
             var languageCodes =
                 (LocalizedContentManager.LanguageCode[]) Enum.GetValues(typeof(LocalizedContentManager.LanguageCode));
-
+            
             foreach (var languageCode in languageCodes)
             {
+                if (languageCode == LocalizedContentManager.LanguageCode.th)
+                {
+                    // skip th as it does not seem to work
+                    continue;
+                }
+                
                 try
                 {
                     LocalizedContentManager.localizedAssetNames.Clear();
+                    LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
 
                     DisplayNames.Add(Enum.GetName(typeof(LocalizedContentManager.LanguageCode), languageCode) ?? "none",
                         translateName(npc.Name, languageCode));
                 }
                 catch { }
             }
-
-            LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
 
             TextureName = npc.getTextureName();
         }

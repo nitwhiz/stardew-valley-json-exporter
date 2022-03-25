@@ -30,6 +30,12 @@ namespace JsonExporter.data.wrapped.@object
 
             foreach (var languageCode in languageCodes)
             {
+                if (languageCode == LocalizedContentManager.LanguageCode.th)
+                {
+                    // skip th as it does not seem to work
+                    continue;
+                }
+                
                 try
                 {
                     LocalizedContentManager.localizedAssetNames.Clear();
@@ -39,8 +45,6 @@ namespace JsonExporter.data.wrapped.@object
                         Original.DisplayName);
                 } catch {}
             }
-
-            LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
         }
 
         public void SaveTexture(string basePath)
