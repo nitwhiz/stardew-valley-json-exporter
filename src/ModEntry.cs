@@ -24,13 +24,13 @@ namespace JsonExporter
             {
                 Monitor.Log("exporting textures...", LogLevel.Info);
 
-                Monitor.Log("portrait", LogLevel.Info);
+                Monitor.Log("portraits ...", LogLevel.Info);
                 foreach (var npc in NpcRepository.GetInstance().GetAll())
                 {
                     npc.SaveTexture(basePath);
                 }
 
-                Monitor.Log("item");
+                Monitor.Log("items ...", LogLevel.Info);
                 foreach (var item in ItemRepository.GetInstance().GetAll())
                 {
                     item.SaveTexture(basePath);
@@ -43,13 +43,13 @@ namespace JsonExporter
             {
                 Monitor.Log("exporting data...", LogLevel.Info);
 
-                Monitor.Log("npcs", LogLevel.Info);
+                Monitor.Log("npcs ...", LogLevel.Info);
                 NpcRepository.GetInstance().ExportJson(basePath, "npcs");
 
-                Monitor.Log("items", LogLevel.Info);
+                Monitor.Log("items ...", LogLevel.Info);
                 ItemRepository.GetInstance().ExportJson(basePath, "items");
 
-                Monitor.Log("gift tastes", LogLevel.Info);
+                Monitor.Log("gift tastes ...", LogLevel.Info);
                 GiftTasteRepository.GetInstance().ExportJson(basePath, "gift-tastes-by-npc");
 
                 Monitor.Log("done!", LogLevel.Info);
