@@ -31,16 +31,19 @@ namespace JsonExporter.data.wrapped.npc
             
             foreach (var languageCode in languageCodes)
             {
-                if (languageCode == LocalizedContentManager.LanguageCode.th)
+                if (
+                    languageCode is LocalizedContentManager.LanguageCode.zh or LocalizedContentManager.LanguageCode.th
+                    or LocalizedContentManager.LanguageCode.ko or LocalizedContentManager.LanguageCode.mod
+                )
                 {
-                    // skip th as it does not seem to work
+                    // skip some languages
                     continue;
                 }
-                
+
                 try
                 {
-                    LocalizedContentManager.localizedAssetNames.Clear();
-                    LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
+                    LocalizedContentManager.CurrentLanguageCode = languageCode;
+                    Game1.game1.TranslateFields();
 
                     DisplayNames.Add(Enum.GetName(typeof(LocalizedContentManager.LanguageCode), languageCode) ?? "none",
                         translateName(npc.Name, languageCode));

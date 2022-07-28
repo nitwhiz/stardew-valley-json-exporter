@@ -14,9 +14,9 @@ namespace JsonExporter.data.wrapped.@object
         [JsonProperty("displayNames")] public readonly Dictionary<string, string> DisplayNames = new();
 
         [JsonProperty("type")] public readonly string Type;
-        
+
         [JsonProperty("category")] public readonly int Category;
-        
+
         [JsonProperty("internalId")] public readonly int InternalId;
 
         public WrappedObject(int internalId, StardewObject originalStardewObject) : base(originalStardewObject)
@@ -30,20 +30,24 @@ namespace JsonExporter.data.wrapped.@object
 
             foreach (var languageCode in languageCodes)
             {
-                if (languageCode == LocalizedContentManager.LanguageCode.th)
+                if (
+                    languageCode is LocalizedContentManager.LanguageCode.zh or LocalizedContentManager.LanguageCode.th
+                    or LocalizedContentManager.LanguageCode.ko or LocalizedContentManager.LanguageCode.mod
+                )
                 {
-                    // skip th as it does not seem to work
+                    // skip some languages
                     continue;
                 }
-                
+
                 try
                 {
-                    LocalizedContentManager.localizedAssetNames.Clear();
-                    Game1.objectInformation = Game1.content.Load<Dictionary<int, string>>("Data\\ObjectInformation", languageCode);
+                    LocalizedContentManager.CurrentLanguageCode = languageCode;
+                    Game1.game1.TranslateFields();
 
                     DisplayNames.Add(Enum.GetName(typeof(LocalizedContentManager.LanguageCode), languageCode) ?? "none",
                         Original.DisplayName);
-                } catch {}
+                }
+                catch { }
             }
         }
 
