@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using JsonExporter.data.wrapped.@object;
+using JsonExporter.data;
 using Newtonsoft.Json;
 using StardewValley;
+using Object = StardewValley.Object;
 
-namespace JsonExporter.repository.item
+namespace JsonExporter.repository
 {
     public class ItemRepository : Repository<ItemRepository, WrappedObject>
     {
@@ -15,13 +16,18 @@ namespace JsonExporter.repository.item
         public override void Populate()
         {
             Objects.Clear();
-
-            foreach (var itemId in Game1.objectInformation.Keys)
+            
+            foreach (string itemId in Game1.objectData.Keys)
             {
-                var sObject = new Object(itemId, 1); 
-                var wItem = new WrappedObject(itemId, sObject);
+                var obj = Game1.objectData[itemId];
 
-                Objects.Add(wItem.Id, wItem);
+                if (obj.CanBeGivenAsGift)
+                {
+                    var sObject = new Object(itemId, 1);
+                    var wItem = new WrappedObject(sObject);
+                    
+                    Objects.Add(wItem.Id, wItem);
+                }
             }
         }
         

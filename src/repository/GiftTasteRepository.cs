@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using JsonExporter.data.gift;
-using JsonExporter.repository.npc;
+using JsonExporter.data;
 using Newtonsoft.Json;
 
-namespace JsonExporter.repository.gift
+namespace JsonExporter.repository
 {
     public class GiftTasteRepository : Repository<GiftTasteRepository, GiftTaste>
     {

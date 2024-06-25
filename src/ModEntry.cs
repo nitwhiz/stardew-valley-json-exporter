@@ -1,7 +1,5 @@
 ﻿using System.IO;
-using JsonExporter.repository.gift;
-using JsonExporter.repository.item;
-using JsonExporter.repository.npc;
+using JsonExporter.repository;
 using StardewModdingAPI;
 using StardewValley;
 

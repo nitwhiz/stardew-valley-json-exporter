@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using JsonExporter.data.wrapped.npc;
+using JsonExporter.data;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.repository.npc
+namespace JsonExporter.repository
 {
     public class NpcRepository : Repository<NpcRepository, WrappedNpc>
     {
@@ -32,7 +32,7 @@ namespace JsonExporter.repository.npc
 
                 var wNpc = new WrappedNpc(npc);
 
-                Npcs.Add(wNpc.Id, wNpc);
+                Npcs.TryAdd(wNpc.Id, wNpc);
             }
         }
 

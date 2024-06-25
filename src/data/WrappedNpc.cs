@@ -6,10 +6,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.data.wrapped.npc
+namespace JsonExporter.data
 {
-    public class WrappedNpc : WrappedInstance<NPC>
+    [JsonObject(MemberSerialization.OptIn)]
+    public class WrappedNpc
     {
+        [JsonProperty("id")] public readonly string Id;
+        
         [JsonProperty("displayNames")] public readonly Dictionary<string, string> DisplayNames = new();
 
         [JsonProperty("birthdaySeason")] public readonly string BirthdaySeason;
@@ -20,8 +23,13 @@ namespace JsonExporter.data.wrapped.npc
 
         public readonly string TextureName;
 
-        public WrappedNpc(NPC npc) : base(npc)
+        public readonly NPC wrappedNpc;
+
+        public WrappedNpc(NPC npc)
         {
+            wrappedNpc = npc;
+            
+            Id = npc.id.ToString();
             Name = npc.displayName;
             BirthdaySeason = npc.Birthday_Season;
             BirthdayDay = npc.Birthday_Day;
@@ -147,7 +155,7 @@ namespace JsonExporter.data.wrapped.npc
 
             s.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
             gd.Clear(Color.Transparent);
-            s.Draw(Original.Portrait, Vector2.Zero, new Rectangle(0, 0, 64, 64), Color.White);
+            s.Draw(wrappedNpc.Portrait, Vector2.Zero, new Rectangle(0, 0, 64, 64), Color.White);
             s.End();
 
             Stream stream = File.Create(Path.Combine(basePath, "textures/portraits", Id + ".png"));

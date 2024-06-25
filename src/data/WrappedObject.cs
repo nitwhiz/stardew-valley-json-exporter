@@ -7,23 +7,28 @@ using Newtonsoft.Json;
 using StardewValley;
 using StardewObject = StardewValley.Object;
 
-namespace JsonExporter.data.wrapped.@object
+namespace JsonExporter.data
 {
-    public class WrappedObject : WrappedInstance<StardewObject>
+    [JsonObject(MemberSerialization.OptIn)]
+    public class WrappedObject
     {
+        [JsonProperty("id")] public readonly string Id;
+        
         [JsonProperty("displayNames")] public readonly Dictionary<string, string> DisplayNames = new();
 
         [JsonProperty("type")] public readonly string Type;
 
         [JsonProperty("category")] public readonly int Category;
 
-        [JsonProperty("internalId")] public readonly int InternalId;
+        public readonly StardewObject wrappedObject;
 
-        public WrappedObject(int internalId, StardewObject originalStardewObject) : base(originalStardewObject)
+        public WrappedObject(StardewObject obj)
         {
-            InternalId = internalId;
-            Type = originalStardewObject.Type.ToLower();
-            Category = originalStardewObject.Category;
+            wrappedObject = obj;
+            
+            Id = wrappedObject.QualifiedItemId;
+            Type = wrappedObject.Type.ToLower();
+            Category = wrappedObject.Category;
 
             var languageCodes =
                 (LocalizedContentManager.LanguageCode[]) Enum.GetValues(typeof(LocalizedContentManager.LanguageCode));
@@ -45,7 +50,7 @@ namespace JsonExporter.data.wrapped.@object
                     Game1.game1.TranslateFields();
 
                     DisplayNames.Add(Enum.GetName(typeof(LocalizedContentManager.LanguageCode), languageCode) ?? "none",
-                        Original.DisplayName);
+                        wrappedObject.DisplayName);
                 }
                 catch { }
             }
@@ -64,7 +69,7 @@ namespace JsonExporter.data.wrapped.@object
 
             s.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
             gd.Clear(Color.Transparent);
-            Original.drawInMenu(s, Vector2.Zero, 1f, 1f, 1f, StackDrawType.Hide, Color.White, false);
+            wrappedObject.drawInMenu(s, Vector2.Zero, 1f, 1f, 1f, StackDrawType.Hide, Color.White, false);
             s.End();
 
             Directory.CreateDirectory(Path.Combine(basePath, "textures/items"));

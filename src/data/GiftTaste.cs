@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using JsonExporter.data.wrapped.npc;
-using JsonExporter.repository.item;
-using JsonExporter.repository.npc;
+using JsonExporter.repository;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.data.gift
+namespace JsonExporter.data
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class GiftTaste
@@ -22,7 +20,7 @@ namespace JsonExporter.data.gift
         [JsonProperty("loveItems")] public readonly List<string> LoveItems = new();
 
         [JsonProperty("neutralItems")] public readonly List<string> NeutralItems = new();
-
+        
         public GiftTaste(string npcId)
         {
             ItemRepository.GetInstance().GetAll().ForEach(item =>
@@ -36,8 +34,8 @@ namespace JsonExporter.data.gift
 
                     NpcId = npc.Id;
 
-                    taste = npc.Original
-                        .getGiftTasteForThisItem(item.Original);
+                    taste = npc.wrappedNpc
+                        .getGiftTasteForThisItem(item.wrappedObject);
                 }
                 catch (Exception)
                 {
