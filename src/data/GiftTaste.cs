@@ -4,63 +4,62 @@ using JsonExporter.repository;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.data
+namespace JsonExporter.data;
+
+[JsonObject(MemberSerialization.OptIn)]
+public class GiftTaste
 {
-    [JsonObject(MemberSerialization.OptIn)]
-    public class GiftTaste
+    [JsonProperty("dislikeItems")] public readonly List<string> DislikeItems = new();
+
+    [JsonProperty("hateItems")] public readonly List<string> HateItems = new();
+
+    [JsonProperty("likeItems")] public readonly List<string> LikeItems = new();
+
+    [JsonProperty("loveItems")] public readonly List<string> LoveItems = new();
+
+    [JsonProperty("neutralItems")] public readonly List<string> NeutralItems = new();
+    
+    [JsonProperty("npcId")] public string NpcId;
+
+    public GiftTaste(string npcId)
     {
-        [JsonProperty("npcId")] public string NpcId;
-
-        [JsonProperty("dislikeItems")] public readonly List<string> DislikeItems = new();
-
-        [JsonProperty("hateItems")] public readonly List<string> HateItems = new();
-
-        [JsonProperty("likeItems")] public readonly List<string> LikeItems = new();
-
-        [JsonProperty("loveItems")] public readonly List<string> LoveItems = new();
-
-        [JsonProperty("neutralItems")] public readonly List<string> NeutralItems = new();
-        
-        public GiftTaste(string npcId)
+        ItemRepository.GetInstance().GetAll().ForEach(item =>
         {
-            ItemRepository.GetInstance().GetAll().ForEach(item =>
+            int taste;
+            WrappedNpc npc;
+
+            try
             {
-                int taste;
-                WrappedNpc npc;
+                npc = NpcRepository.GetInstance().GetById(npcId);
 
-                try
-                {
-                    npc = NpcRepository.GetInstance().GetById(npcId);
+                NpcId = npc.Id;
 
-                    NpcId = npc.Id;
+                taste = npc.InnerNpc
+                    .getGiftTasteForThisItem(item.InnerObject);
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
-                    taste = npc.wrappedNpc
-                        .getGiftTasteForThisItem(item.wrappedObject);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-
-                switch (taste)
-                {
-                    case NPC.gift_taste_love:
-                        LoveItems.Add(item.Id);
-                        break;
-                    case NPC.gift_taste_like:
-                        LikeItems.Add(item.Id);
-                        break;
-                    case NPC.gift_taste_dislike:
-                        DislikeItems.Add(item.Id);
-                        break;
-                    case NPC.gift_taste_hate:
-                        HateItems.Add(item.Id);
-                        break;
-                    case NPC.gift_taste_neutral:
-                        NeutralItems.Add(item.Id);
-                        break;
-                }
-            });
-        }
+            switch (taste)
+            {
+                case NPC.gift_taste_love:
+                    LoveItems.Add(item.Id);
+                    break;
+                case NPC.gift_taste_like:
+                    LikeItems.Add(item.Id);
+                    break;
+                case NPC.gift_taste_dislike:
+                    DislikeItems.Add(item.Id);
+                    break;
+                case NPC.gift_taste_hate:
+                    HateItems.Add(item.Id);
+                    break;
+                case NPC.gift_taste_neutral:
+                    NeutralItems.Add(item.Id);
+                    break;
+            }
+        });
     }
 }

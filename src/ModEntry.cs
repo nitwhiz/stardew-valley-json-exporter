@@ -3,57 +3,47 @@ using JsonExporter.repository;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace JsonExporter
+namespace JsonExporter;
+
+public class ModEntry : Mod
 {
-    public class ModEntry : Mod
+    public override void Entry(IModHelper helper)
     {
-        public override void Entry(IModHelper helper)
+        var basePath = Path.Combine(helper.DirectoryPath, "export");
+
+        if (Directory.Exists(basePath)) Directory.Delete(basePath, true);
+
+        Directory.CreateDirectory(basePath);
+
+        helper.ConsoleCommands.Add("export_textures", "export all textures", (cmd, args) =>
         {
-            var basePath = Path.Combine(helper.DirectoryPath, "export");
+            Monitor.Log("exporting textures...", LogLevel.Info);
 
-            if (Directory.Exists(basePath))
-            {
-                Directory.Delete(basePath, true);
-            }
+            Monitor.Log("portraits ...", LogLevel.Info);
+            foreach (var npc in NpcRepository.GetInstance().GetAll()) npc.SaveTexture(basePath);
 
-            Directory.CreateDirectory(basePath);
+            Monitor.Log("items ...", LogLevel.Info);
+            foreach (var item in ItemRepository.GetInstance().GetAll()) item.SaveTexture(basePath);
 
-            helper.ConsoleCommands.Add("export_textures", "export all textures", (cmd, args) =>
-            {
-                Monitor.Log("exporting textures...", LogLevel.Info);
+            Monitor.Log("done!", LogLevel.Info);
+        });
 
-                Monitor.Log("portraits ...", LogLevel.Info);
-                foreach (var npc in NpcRepository.GetInstance().GetAll())
-                {
-                    npc.SaveTexture(basePath);
-                }
+        helper.ConsoleCommands.Add("export_data", "export all data", (cmd, args) =>
+        {
+            Monitor.Log("exporting data...", LogLevel.Info);
 
-                Monitor.Log("items ...", LogLevel.Info);
-                foreach (var item in ItemRepository.GetInstance().GetAll())
-                {
-                    item.SaveTexture(basePath);
-                }
+            Monitor.Log("npcs ...", LogLevel.Info);
+            NpcRepository.GetInstance().ExportJson(basePath, "npcs");
 
-                Monitor.Log("done!", LogLevel.Info);
-            });
+            Monitor.Log("items ...", LogLevel.Info);
+            ItemRepository.GetInstance().ExportJson(basePath, "items");
 
-            helper.ConsoleCommands.Add("export_data", "export all data", (cmd, args) =>
-            {
-                Monitor.Log("exporting data...", LogLevel.Info);
+            Monitor.Log("gift tastes ...", LogLevel.Info);
+            GiftTasteRepository.GetInstance().ExportJson(basePath, "gift-tastes-by-npc");
 
-                Monitor.Log("npcs ...", LogLevel.Info);
-                NpcRepository.GetInstance().ExportJson(basePath, "npcs");
+            Monitor.Log("done!", LogLevel.Info);
 
-                Monitor.Log("items ...", LogLevel.Info);
-                ItemRepository.GetInstance().ExportJson(basePath, "items");
-
-                Monitor.Log("gift tastes ...", LogLevel.Info);
-                GiftTasteRepository.GetInstance().ExportJson(basePath, "gift-tastes-by-npc");
-
-                Monitor.Log("done!", LogLevel.Info);
-                
-                LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
-            });
-        }
+            LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
+        });
     }
 }

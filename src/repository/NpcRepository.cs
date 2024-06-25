@@ -4,46 +4,42 @@ using JsonExporter.data;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.repository
+namespace JsonExporter.repository;
+
+public class NpcRepository : Repository<NpcRepository, WrappedNpc>
 {
-    public class NpcRepository : Repository<NpcRepository, WrappedNpc>
+    private static readonly Dictionary<string, WrappedNpc> Npcs = new();
+
+    [JsonProperty("npcs")] private static WrappedNpc[] NpcsAsArray => Npcs.Values.ToArray();
+
+    public override void Populate()
     {
-        private static readonly Dictionary<string, WrappedNpc> Npcs = new();
+        Npcs.Clear();
 
-        [JsonProperty("npcs")] private static WrappedNpc[] NpcsAsArray => Npcs.Values.ToArray();
-
-        public override void Populate()
+        foreach (var npcName in Game1.NPCGiftTastes.Keys)
         {
-            Npcs.Clear();
+            if (npcName.StartsWith("Universal_")) continue;
 
-            foreach (var npcName in Game1.NPCGiftTastes.Keys)
+            var npc = new NPC
             {
-                if (npcName.StartsWith("Universal_"))
-                {
-                    continue;
-                }
+                Name = npcName
+            };
 
-                var npc = new NPC
-                {
-                    Name = npcName
-                };
-                
-                npc.reloadData();
+            npc.reloadData();
 
-                var wNpc = new WrappedNpc(npc);
+            var wNpc = new WrappedNpc(npc);
 
-                Npcs.TryAdd(wNpc.Id, wNpc);
-            }
+            Npcs.TryAdd(wNpc.Id, wNpc);
         }
+    }
 
-        public override List<WrappedNpc> GetAll()
-        {
-            return Npcs.Values.ToList();
-        }
+    public override List<WrappedNpc> GetAll()
+    {
+        return Npcs.Values.ToList();
+    }
 
-        public WrappedNpc GetById(string npcId)
-        {
-            return Npcs[npcId];
-        }
+    public WrappedNpc GetById(string npcId)
+    {
+        return Npcs[npcId];
     }
 }
