@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using JsonExporter.Contract;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.data;
+namespace JsonExporter.Model;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class WrappedNpc
+public class WrappedNpc : ITranslatable
 {
     [JsonProperty("birthdayDay")] public readonly int BirthdayDay;
 
@@ -18,6 +21,8 @@ public class WrappedNpc
     [JsonProperty("displayNames")] public readonly Dictionary<string, string> DisplayNames = new();
 
     [JsonProperty("id")] public readonly string Id;
+
+    [JsonProperty("textureName")] public readonly string TexureName;
 
     public readonly NPC InnerNpc;
 
@@ -29,30 +34,7 @@ public class WrappedNpc
         BirthdaySeason = npc.Birthday_Season;
         BirthdayDay = npc.Birthday_Day;
 
-        var languageCodes =
-            (LocalizedContentManager.LanguageCode[])Enum.GetValues(typeof(LocalizedContentManager.LanguageCode));
-
-        foreach (var languageCode in languageCodes)
-        {
-            if (
-                    languageCode is LocalizedContentManager.LanguageCode.zh or LocalizedContentManager.LanguageCode.th
-                    or LocalizedContentManager.LanguageCode.ko or LocalizedContentManager.LanguageCode.mod
-                )
-                // skip some languages
-                continue;
-
-            try
-            {
-                LocalizedContentManager.CurrentLanguageCode = languageCode;
-                Game1.game1.TranslateFields();
-
-                DisplayNames.Add(Enum.GetName(typeof(LocalizedContentManager.LanguageCode), languageCode) ?? "none",
-                    NPC.GetDisplayName(npc.Name));
-            }
-            catch
-            {
-            }
-        }
+        TexureName = Convert.ToHexString(SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(Id))).ToLower();
     }
 
     public void SaveTexture(string basePath)
@@ -79,9 +61,19 @@ public class WrappedNpc
         s.Draw(InnerNpc.Portrait, Vector2.Zero, new Rectangle(0, 0, 64, 64), Color.White);
         s.End();
 
-        Stream stream = File.Create(Path.Combine(basePath, "textures/portraits", Id + ".png"));
+        Directory.CreateDirectory(Path.Combine(basePath, "textures/portraits"));
+        Directory.CreateDirectory(Path.Combine(basePath, "textures/portraits", TexureName[0].ToString()));
+
+        var stream = File.Create(Path.Combine(basePath, "textures/portraits", TexureName[0].ToString(),
+            TexureName + ".png"));
+
         rTarget.SaveAsPng(stream, rTarget.Width, rTarget.Height);
 
         stream.Dispose();
+    }
+
+    public void PopulateDisplayName(string code)
+    {
+        DisplayNames[code] = NPC.GetDisplayName(InnerNpc.Name);
     }
 }

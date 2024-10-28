@@ -1,16 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using JsonExporter.data;
+using JsonExporter.Model;
+using JsonExporter.Util;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.repository;
+namespace JsonExporter.Repository;
 
 public class NpcRepository : Repository<NpcRepository, WrappedNpc>
 {
     private static readonly Dictionary<string, WrappedNpc> Npcs = new();
 
     [JsonProperty("npcs")] private static WrappedNpc[] NpcsAsArray => Npcs.Values.ToArray();
+
+    [JsonProperty("version")] private static string _version = DateTime.Now.ToString("u");
 
     public override void Populate()
     {
@@ -29,8 +33,10 @@ public class NpcRepository : Repository<NpcRepository, WrappedNpc>
 
             var wNpc = new WrappedNpc(npc);
 
-            Npcs.TryAdd(wNpc.Id, wNpc);
+            Npcs[wNpc.Id] = wNpc;
         }
+
+        TranslationHelper.TranslateAll(Npcs.Values);
     }
 
     public override List<WrappedNpc> GetAll()

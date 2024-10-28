@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace JsonExporter.repository;
+namespace JsonExporter.Repository;
 
 [JsonObject(MemberSerialization.OptIn)]
 public abstract class Repository<TRepository, TItem> where TRepository : Repository<TRepository, TItem>, new()
@@ -28,6 +28,6 @@ public abstract class Repository<TRepository, TItem> where TRepository : Reposit
     {
         var jsonFileName = Path.Combine(baseDir, fileName + ".json");
 
-        File.WriteAllText(jsonFileName, JsonConvert.SerializeObject(this));
+        File.WriteAllText(jsonFileName, JsonConvert.SerializeObject(this, Formatting.Indented));
     }
 }

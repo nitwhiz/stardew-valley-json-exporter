@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using JsonExporter.repository;
+using JsonExporter.Repository;
 using Newtonsoft.Json;
 using StardewValley;
 
-namespace JsonExporter.data;
+namespace JsonExporter.Model;
 
 [JsonObject(MemberSerialization.OptIn)]
 public class GiftTaste
 {
+    [JsonProperty("id")] public readonly Guid Id;
+    
     [JsonProperty("dislikeItems")] public readonly List<string> DislikeItems = new();
 
     [JsonProperty("hateItems")] public readonly List<string> HateItems = new();
@@ -18,7 +20,7 @@ public class GiftTaste
     [JsonProperty("loveItems")] public readonly List<string> LoveItems = new();
 
     [JsonProperty("neutralItems")] public readonly List<string> NeutralItems = new();
-    
+
     [JsonProperty("npcId")] public string NpcId;
 
     public GiftTaste(string npcId)

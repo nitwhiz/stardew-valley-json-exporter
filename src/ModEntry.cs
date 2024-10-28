@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using JsonExporter.repository;
+using JsonExporter.Repository;
+using JsonExporter.Util;
 using StardewModdingAPI;
-using StardewValley;
 
 namespace JsonExporter;
 
@@ -38,12 +38,18 @@ public class ModEntry : Mod
             Monitor.Log("items ...", LogLevel.Info);
             ItemRepository.GetInstance().ExportJson(basePath, "items");
 
+            Monitor.Log("categories ...", LogLevel.Info);
+            CategoryRepository.GetInstance().ExportJson(basePath, "categories");
+
             Monitor.Log("gift tastes ...", LogLevel.Info);
             GiftTasteRepository.GetInstance().ExportJson(basePath, "gift-tastes-by-npc");
 
-            Monitor.Log("done!", LogLevel.Info);
+            Monitor.Log("recipes ...", LogLevel.Info);
+            RecipeRepository.GetInstance().ExportJson(basePath, "recipes");
 
-            LocalizedContentManager.CurrentLanguageCode = LocalizedContentManager.LanguageCode.en;
+            TranslationHelper.Reset();
+
+            Monitor.Log("done!", LogLevel.Info);
         });
     }
 }
