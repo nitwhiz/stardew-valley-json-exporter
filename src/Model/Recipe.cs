@@ -23,7 +23,7 @@ public class Recipe
         Name = recipe.name;
         IsCooking = recipe.isCookingRecipe;
 
-        Output = new RecipeOutput(recipe.itemToProduce, recipe.numberProducedPerCraft);
+        Output = new RecipeOutput(recipe);
 
         foreach (var ingredient in recipe.recipeList) Ingredients.Add(new Ingredient(ingredient.Key, ingredient.Value));
     }

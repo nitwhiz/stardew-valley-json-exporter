@@ -14,11 +14,7 @@ public class Ingredient
 
     public Ingredient(string itemId, int quantity)
     {
-        if (itemId.StartsWith("-"))
-            ItemId = itemId;
-        else
-            ItemId = ItemRegistry.QualifyItemId(itemId);
-
+        ItemId = itemId.StartsWith("-") ? itemId : ItemRegistry.QualifyItemId(itemId);
         Quantity = quantity;
     }
 }

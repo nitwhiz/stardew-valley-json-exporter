@@ -12,9 +12,9 @@ public class RecipeOutput
 
     [JsonProperty("amount")] public int Amount;
 
-    public RecipeOutput(List<string> itemIds, int amount)
+    public RecipeOutput(CraftingRecipe recipe)
     {
-        ItemIds = itemIds.Select(ItemRegistry.QualifyItemId).ToList();
-        Amount = amount;
+        ItemIds = recipe.itemToProduce.Select(itemId => recipe.bigCraftable ? ItemRegistry.ManuallyQualifyItemId(itemId, "(BC)") : ItemRegistry.QualifyItemId(itemId)).ToList();
+        Amount = recipe.numberProducedPerCraft;
     }
 }
